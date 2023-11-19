@@ -1,0 +1,26 @@
+﻿#
+# This file is used to filter (i.e. ignore) files and directories when traversing the file
+# system of a local Chromium enlistment.
+#
+# All the files/directories *not* filtered out end up being displayed in the "Chromium Explorer"
+# tool window.
+#
+# The purpose is mainly to avoid loading a bunch of files that are not useful for day to day
+# work in an IDE. Commenting out the entire file won't have any adverse effect (other than
+# making the initial directory traversal slightly slower due to the increased number of
+# directories to explore).
+#
+# ==========================================================================================
+# SYNTAX
+# ------
+# The supported syntax is currently a subset of .gitignore syntax.
+#
+# * Empty lines (or lines starting with "#") are ignored
+# * Support "/" at end of name to indicate directory name matching only.
+# * Support "/" at the beginning to indicate path relative to "root" ("root" being the 
+#   Chromium root enlistment in this case).
+# * Support "*" and "**" wildcards
+# * NO support for "!"
+# ==========================================================================================
+
+.git/

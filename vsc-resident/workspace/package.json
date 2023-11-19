@@ -1,0 +1,45 @@
+{
+  "name": "vsc-resident-workspace",
+  "displayName": "resident-workspace",
+  "description": "Fast and scalable text search - workspace module",
+  "publisher": "wouterdek",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [
+    "onCommand:vsc-resident-workspace.activate"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {},
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "node ./esbuild.js",
+    "package": "set NODE_ENV=production && node ./esbuild.js",
+    "watch": "node ./esbuild.js --watch",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.2",
+    "@types/ndjson": "^2.0.2",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "@vscode/test-electron": "^2.3.4",
+    "esbuild": "^0.16.10",
+    "eslint": "^8.26.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "ndjson": "^2.0.0"
+  }
+}

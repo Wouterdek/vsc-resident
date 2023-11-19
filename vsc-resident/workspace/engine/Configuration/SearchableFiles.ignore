@@ -1,0 +1,60 @@
+﻿#
+# This file is used to determine which files should be ignored by the "Search Code"
+# feature.
+#
+# Note that the list of files considered is already pre-filtered by the
+# contents of "ChromiumExplorer.ignore" file.
+#
+# Note also that even if a file is not ignored here, it still has to match an inclusion
+# rule in "SearchableFiles.include".
+#
+# ==========================================================================================
+# SYNTAX
+# ------
+# The supported syntax is currently a subset of .gitignore syntax.
+#
+# * Empty lines (or lines starting with "#") are ignored
+# * "/" at end of name to indicate directory name matching only.
+# * "/" at the beginning to indicate path relative to "root" ("root" being the 
+#   Chromium root enlistment in this case).
+# * "*" wildcard to indicate any pattern inside a directory/file name.
+# * "/**/" and "**/" wildcards to indicate any set of directory between prefix and suffix.
+# * "!" is not supported.
+# ==========================================================================================
+
+
+#
+# File extensions of files to ignore.
+#
+*.pdb
+*.obj
+# clang compiler (see https://reviews.llvm.org/D36238)
+*.obj-*
+*.pack
+*.pch
+# clang compiler (see https://reviews.llvm.org/D36238)
+*.pch-*
+*.lib
+*.ilk
+*.exe
+*.dll
+*.sdf
+*.opensdf
+*.o
+*.7z
+*.pak
+*.nexe
+*.res
+*.tgz
+*.gz
+*.mo
+*.so
+*.so.*
+*.gif
+*.png
+*.jpg
+*.jpeg
+*.ogg
+*.ex_
+*.mp4
+*.ac3

@@ -1,0 +1,163 @@
+html {
+	height: 100%;
+}
+
+body {
+	background-color: transparent;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.front-ellipses {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    direction: rtl;
+    text-align: left;
+}
+
+.togglebutton {
+	position: relative;
+	display: inline-block;
+}
+
+.togglebutton input {
+	display: none;
+}
+
+.togglebutton {
+	outline: none;
+	background:  #3a3d41;
+	border-radius: 2px;
+	fill: currentColor;
+	cursor: pointer;
+	margin:1px;
+}
+.togglebutton {
+	background: transparent;
+	height: inherit;
+	flex-grow: 1;
+	box-sizing: border-box;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	padding: 2px 2px;
+	white-space: wrap;
+	outline: none;
+	text-decoration: none;
+	border: calc(1 * 1px) solid transparent;
+}
+.togglebutton:hover {
+	background: #45494e;
+}
+.togglebutton:active {
+	background: #3a3d41;
+}
+.togglebutton:has(input:checked)
+{
+	background-color: #007fd4;
+}
+.togglebutton[disabled] {
+	opacity: 0.4;
+	background: #3a3d41;
+}
+
+.search-box {
+	width: 100%;
+}
+
+.file-paths-box {
+	width: 100%;
+}
+
+.search-settings-panel {
+	display: flex;
+	flex-direction: row;
+}
+
+.settings-inner-panel {
+	flex-grow: 1;
+}
+
+.dropdown-textbox-container {
+	display: grid; 
+	grid-template-columns: 1fr 30px;
+	margin-top: 1px;
+}
+
+.dropdown-textbox-container-dropdown {
+	grid-column: 1 / span 2;
+    grid-row: 1;
+}
+
+.dropdown-textbox-container-textbox {
+	grid-column: 1 / span 1;
+    grid-row: 1;
+}
+
+.results-box {
+	flex-grow: 1;
+	min-height: 0;
+    overflow: scroll;
+}
+
+.results-grid {
+	display: grid;
+	grid-template-columns: 20fr 5px 5fr 5px 75fr;
+	grid-template-rows: auto;
+
+	font-family: Consolas, "Courier New", monospace;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.results-grid > .row {
+	display: contents;
+}
+
+.results-grid > .selected > * {
+	background-color: var(--vscode-list-activeSelectionBackground) !important;
+	color: var(--vscode-list-activeSelectionForeground) !important;
+}
+
+.results-grid > .row > .column-separator {
+	cursor: ew-resize;
+}
+
+.results-grid > .row > .column-separator::after {
+	background-color: var(--vscode-panel-border) !important;
+    content: "\00a0";
+    width: 1px;
+    height: 100%;
+    display: inline-block;
+}
+
+.results-grid > .row > .item {
+	padding: 2px 5px;
+	outline-width: 0;
+	user-select: none;
+}
+
+.results-grid > .row > .item > pre {
+	margin: 0;
+	background-color: #00000000 !important;
+}
+
+.results-grid > .oddfile > * {
+	background-color: var(--vscode-sideBar-background);
+}
+
+.results-grid > .oddfile:hover > * {
+	background-color: var(--vscode-list-hoverBackground);
+	color: var(--vscode-list-hoverForeground);
+}
+
+.results-grid > .evenfile > * {
+	background-color: var(--vscode-panel-background);
+}
+
+.results-grid > .evenfile:hover > * {
+	background-color: var(--vscode-list-hoverBackground);
+	color: var(--vscode-list-hoverForeground);
+}

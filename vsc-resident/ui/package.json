@@ -1,0 +1,107 @@
+{
+  "name": "vsc-resident-ui",
+  "displayName": "resident",
+  "description": "Fast and scalable text search",
+  "publisher": "wouterdek",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vsc-resident",
+          "title": "Resident",
+          "icon": "media/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "vsc-resident": [
+        {
+          "type": "webview",
+          "id": "vsc-resident.searchView",
+          "name": "Resident"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "title": "vsc-resident",
+        "properties": {
+          "vsc-resident.searchDebounceDelay": {
+            "type": "number",
+            "default": 100,
+            "description": "Time in milliseconds between input and starting search, preventing extra unnecessary queries."
+          },
+          "vsc-resident.maxResults": {
+            "type": "number",
+            "default": 1000,
+            "description": "Maximum number of search results to display."
+          },
+          "vsc-resident.maxSnippetLength": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum length of the text preview that is retrieved for each search result."
+          },
+          "vsc-resident.enableGotoDefinition": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable experimental 'goto definition' provider."
+          },
+          "vsc-resident.snippetHighlighting.enable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable syntax highlighting for search results."
+          },
+          "vsc-resident.snippetHighlighting.lightTheme": {
+            "type": "string",
+            "default": "github-light",
+            "description": "Syntax highlighting light-mode theme (provided by shiki)"
+          },
+          "vsc-resident.snippetHighlighting.darkTheme": {
+            "type": "string",
+            "default": "dark-plus",
+            "description": "Syntax highlighting dark-mode theme (provided by shiki)"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "node ./esbuild.js",
+    "package": "set NODE_ENV=production && node ./esbuild.js",
+    "watch": "node ./esbuild.js --watch",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.2",
+    "@types/ndjson": "^2.0.2",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@types/vscode-webview": "^1.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "@vscode/test-electron": "^2.3.4",
+    "esbuild": "^0.16.10",
+    "eslint": "^8.26.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@vscode/webview-ui-toolkit": "^1.2.2",
+    "ndjson": "^2.0.0",
+    "shiki": "^0.14.5"
+  }
+}

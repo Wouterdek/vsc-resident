@@ -1,0 +1,15 @@
+﻿#
+# This file is used to determine which files should be included in the "Search Code"
+# feature.
+#
+# Note that the list of files considered is already pre-filtered by SearchFiles.ignore file.
+#
+# Note also that if this list contains patterns for files which are not ASCII (or UTF8 to some extent),
+# the File Contents search will still perform an ascii text search in those files.
+#
+# ==========================================================================================
+# SYNTAX: The syntax is similar to .gitingore (See ChromiumExplorer.ignore file), except of
+#   course it has the opposite semantics in this case (it's a list of patterns to *include*).
+# ==========================================================================================
+
+*
