@@ -126,6 +126,7 @@ class SearchEngineProxy
 
 	public sendMessage(msg: TypedMessage, isActivationMessage: boolean = false) : number
 	{
+		if(this.engineMessageCommandId == null) { throw Error("No connection to backend server"); }
 		if(isActivationMessage) {
 			this.activationMessages.push(msg);
 		}
@@ -144,6 +145,7 @@ class SearchEngineProxy
 
 	public sendMessages(msgs: TypedMessage[], areActivationMessages: boolean = false) : number
 	{
+		if(this.engineMessageCommandId == null) { throw Error("No connection to backend server"); }
 		if(msgs.length === 0) { throw new Error("empty messageset"); }
 
 		if(areActivationMessages) {
@@ -165,6 +167,7 @@ class SearchEngineProxy
 
 	public async sendRoutedMessage(msg: TypedMessage, isActivationMessage: boolean = false) : Promise<TypedMessage>
 	{
+		if(this.engineMessageCommandId == null) { throw Error("No connection to backend server"); }
 		if(isActivationMessage) {
 			this.activationMessages.push(msg);
 		}
@@ -188,6 +191,7 @@ class SearchEngineProxy
 
 	public async sendRoutedMessages(msgs: TypedMessage[], areActivationMessages: boolean = false) : Promise<TypedMessage[]>
 	{
+		if(this.engineMessageCommandId == null) { throw Error("No connection to backend server"); }
 		if(msgs.length === 0) { return []; }
 
 		if(areActivationMessages) {
@@ -354,6 +358,43 @@ class Plugin
 
 		const workspaceMessageHandlerId = 'vsc-resident-ui.onWorkspaceMessage';
 		const searchEngine = new SearchEngineProxy(this.searchEngineSubscriptions, workspaceMessageHandlerId);
+
+		let lastSearchRequestId = -1;
+		this.view.onSearch = (query) => { lastSearchRequestId = searchEngine.startSearch(query); };
+		this.view.onRequestRestart = async () =>
+		{
+			if(await this.restartBackend())
+			{
+				vscode.window.showInformationMessage("Search server restarted");
+			}
+		};
+		this.view.onViewServerStatus = async () => { 
+			let request = new GetDatabaseStatisticsRequest();
+			request.ClassName = "GetDatabaseStatisticsRequest";
+			let response:GetDatabaseStatisticsResponse;
+			try
+			{
+				response = await timeoutPromise(searchEngine.sendRoutedMessage(request), 3000) as GetDatabaseStatisticsResponse;
+			}
+			catch(ex)
+			{
+				vscode.window.showErrorMessage("Could not retrieve search server info. Try restarting/reinstalling.", { modal: true });
+				return;
+			}
+			let msg = [
+				"Search Server Statistics",
+				"",
+				"Server Status: " + IndexingServerStatus[response.ServerStatus],
+				"Project Count: " + response.ProjectCount,
+				"File Count: " + response.FileCount,
+				"Searchable File Count: " + response.SearchableFileCount,
+				"Server Native Memory Usage: " + response.ServerNativeMemoryUsage,
+				"Server Gc Memory Usage: " + response.ServerGcMemoryUsage,
+				"Index Last Updated Utc: " + response.IndexLastUpdatedUtc
+			].join("\n");
+			vscode.window.showInformationMessage(msg, { modal: true });
+		 };
+
 		if(!await searchEngine.activate())
 		{
 			return false;
@@ -390,42 +431,6 @@ class Plugin
 				searchEngine.sendMessage(req, true);
 			}
 		}));
-		
-		let lastSearchRequestId = -1;
-		this.view.onSearch = (query) => { lastSearchRequestId = searchEngine.startSearch(query); };
-		this.view.onRequestRestart = async () =>
-		{
-			if(await this.restartBackend())
-			{
-				vscode.window.showInformationMessage("Search server restarted");
-			}
-		};
-		this.view.onViewServerStatus = async () => { 
-			let request = new GetDatabaseStatisticsRequest();
-			request.ClassName = "GetDatabaseStatisticsRequest";
-			let response:GetDatabaseStatisticsResponse;
-			try
-			{
-				response = await timeoutPromise(searchEngine.sendRoutedMessage(request), 3000) as GetDatabaseStatisticsResponse;
-			}
-			catch(ex)
-			{
-				vscode.window.showErrorMessage("Could not retrieve search server info. Try restarting/reinstalling.", { modal: true });
-				return;
-			}
-			let msg = [
-				"Search Server Statistics",
-				"",
-				"Server Status: " + IndexingServerStatus[response.ServerStatus],
-				"Project Count: " + response.ProjectCount,
-				"File Count: " + response.FileCount,
-				"Searchable File Count: " + response.SearchableFileCount,
-				"Server Native Memory Usage: " + response.ServerNativeMemoryUsage,
-				"Server Gc Memory Usage: " + response.ServerGcMemoryUsage,
-				"Index Last Updated Utc: " + response.IndexLastUpdatedUtc
-			].join("\n");
-			vscode.window.showInformationMessage(msg, { modal: true });
-		 };
 
 		searchEngine.onSearchCodeResponse = (requestId, msg) => {
 			if(requestId < lastSearchRequestId) { return; }
