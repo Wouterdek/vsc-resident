@@ -12,4 +12,5 @@ Fast and scalable search for VS Code. Uses the VS Chromium search engine interna
 
 ## Requirements
 
+Requires the [resident-workspace](https://marketplace.visualstudio.com/items?itemName=wouterdek.vsc-resident-workspace) plugin to function.
 See [this guide](https://chromium.github.io/vs-chromium/#getting-started-project-file) on how to set up your project for use with this plugin.
