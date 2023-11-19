@@ -3,7 +3,8 @@
   "displayName": "resident-workspace",
   "description": "Fast and scalable text search - workspace module",
   "publisher": "wouterdek",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "repository": "https://github.com/Wouterdek/vsc-resident",
   "engines": {
     "vscode": "^1.75.0"
   },

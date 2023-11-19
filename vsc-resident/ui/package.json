@@ -4,6 +4,7 @@
   "description": "Fast and scalable text search",
   "publisher": "wouterdek",
   "version": "1.0.0",
+  "repository": "https://github.com/Wouterdek/vsc-resident",
   "engines": {
     "vscode": "^1.75.0"
   },
