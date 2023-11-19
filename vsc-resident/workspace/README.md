@@ -1,11 +1,4 @@
 # vsc-resident-workspace
 
-## Features
-
-## Requirements
-
-## Extension Settings
-
-## Known Issues
-
-## Release Notes
+Workspace component of vsc-resident.
+This was separated from the main plugin to support remote development.
