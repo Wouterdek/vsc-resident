@@ -2,6 +2,8 @@
 
 Fast and scalable search for VS Code. Uses the VS Chromium search engine internally.
 
+![Screenshot](media/screenshot.png)
+
 ## Features
 
  - Very fast search in extremely large codebases
