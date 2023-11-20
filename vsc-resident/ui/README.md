@@ -1,6 +1,6 @@
 # vsc-resident-ui
 
-Fast and scalable search for VS Code. Uses the VS Chromium search engine internally.
+Fast and scalable search for VS Code. Uses the VS Chromium search engine internally. Only works on Windows.
 
 ![Screenshot](media/screenshot.png)
 
@@ -11,6 +11,7 @@ Fast and scalable search for VS Code. Uses the VS Chromium search engine interna
  - Supports regex, file path search, ...
  - Syntax highlighting in search results
  - Experimental regex-based go-to-definition
+ - Supports VS Code remote development
 
 ## Requirements
 
