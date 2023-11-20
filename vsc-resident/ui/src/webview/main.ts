@@ -22,6 +22,8 @@ provideVSCodeDesignSystem().register(allComponents);
     const wholeWordButton = document.querySelector('.whole-word-button');
     const regexButton = document.querySelector('.regex-button');
     const symlinkButton = document.querySelector('.symlink-button');
+    const statusLabel = document.querySelector('.status-label');
+    
     
     let isSettingsExpanded = true;
 
@@ -102,6 +104,11 @@ provideVSCodeDesignSystem().register(allComponents);
                     if(configPromiseResolver != null) { configPromiseResolver(); }
                     break;
                 }
+            case 'setStatusLabel':
+                {
+                    statusLabel.innerText = message.label;
+                    break;
+                }
         }
     });
 
@@ -138,7 +145,8 @@ provideVSCodeDesignSystem().register(allComponents);
             searchBoxHistory: getTextboxHistory(searchBoxDropdown),
             filePathsBoxHistory: getTextboxHistory(filePathsBoxDropdown),
             query: query, 
-            results: searchResults 
+            results: searchResults,
+            status: statusLabel.innerText
         };
     }
 
@@ -160,6 +168,8 @@ provideVSCodeDesignSystem().register(allComponents);
         {
             setResults(state.results);
         }
+
+        statusLabel.innerText = state.status;
     }
 
     
@@ -171,6 +181,7 @@ provideVSCodeDesignSystem().register(allComponents);
         filePathsBoxContainer.style.display = isExpanded ? "" : "none";
         serverStatusButton.style.display = isExpanded ? "" : "none";
         restartButton.style.display = isExpanded ? "" : "none";
+        statusLabel.style.display = isExpanded ? "" : "none";
     }
 
     function getTextboxHistory(dropdown)
@@ -201,8 +212,17 @@ provideVSCodeDesignSystem().register(allComponents);
     {
         const state = getState();
 
-        addTextboxHistoryOption(searchBoxDropdown, state.query.queryText);
-        addTextboxHistoryOption(filePathsBoxDropdown, state.query.filePaths);
+        const timeBeforeAddedToSearchHistoryMs = 4000;
+        setTimeout(() => {
+            if(state.query.queryText == getState().query.queryText)
+            {
+                addTextboxHistoryOption(searchBoxDropdown, state.query.queryText);
+            }
+            if(state.query.filePaths == getState().query.filePaths)
+            {
+                addTextboxHistoryOption(filePathsBoxDropdown, state.query.filePaths);
+            }
+        }, timeBeforeAddedToSearchHistoryMs);
 
         clearResultsGrid();
         vscode.postMessage({ 
@@ -216,6 +236,7 @@ provideVSCodeDesignSystem().register(allComponents);
     class ResultsEntry
     {
         filePath:string;
+        rootPath:string;
         lineNumber: number;
         columnNumber: number;
         matchLength: number;

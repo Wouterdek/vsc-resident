@@ -1,5 +1,8 @@
 /*
 TODO:
+	does go to result also work when using remote?
+	fix incorrect code highlight theme on start
+	collapse/hide file?
 	highlight match in result, pause and refresh index buttons, virtualize results list, multiple search result windows
 	auto-reactivate on workspace pluginhost crash, general robustness/error-handling, better build process,
 	improve lag while streaming results,
@@ -220,6 +223,7 @@ class SearchEngineProxy
 	public startSearch(query: SearchParams)
 	{
 		if(query.SearchString.length !== 0){
+			if(query.SearchString.length < 2) { return; }
 			const msg = new SearchCodeRequest;
 			msg.ClassName = "SearchCodeRequest";
 			msg.SearchParams = query;
@@ -435,6 +439,7 @@ class Plugin
 		searchEngine.onSearchCodeResponse = (requestId, msg) => {
 			if(requestId < lastSearchRequestId) { return; }
 	
+			this.view.setStatusLabel(`${msg.HitCount} hits (${msg.SearchedFileCount} searched files, ${msg.TotalFileCount} total)`);
 			this.view.setResults(msg.SearchResults);
 
 			let maxSnippetLength:number = getConfig().get("maxSnippetLength")!;
@@ -464,6 +469,7 @@ class Plugin
 		searchEngine.onSearchFilePathsResponse = (requestId, msg) => {
 			if(requestId < lastSearchRequestId) { return; }
 	
+			this.view.setStatusLabel(`${msg.HitCount} hits (${msg.TotalCount} total)`);
 			this.view.setResults(msg.SearchResult);
 		};
 		return true;
@@ -480,6 +486,7 @@ export function deactivate() {}
 
 class ViewData {
 	filePath: string = "";
+	rootPath: string = "";
 	lineNumber: number = 0;
 	columnNumber: number = 0;
 	matchLength: number = 0;
@@ -533,6 +540,7 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 						searchParams.MaxResults = getConfig().get<number>("maxResults")!;
 						searchParams.UseRe2Engine = true;
 
+						this.setStatusLabel("");
 						if(this.onSearch){ this.onSearch(searchParams); }
 						break;
 					}
@@ -542,7 +550,8 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 
 						var pos = new vscode.Position(entry.lineNumber, entry.columnNumber);
 						var posEnd = new vscode.Position(entry.lineNumber, entry.columnNumber + entry.matchLength /*todo: multiline*/ );
-						var openPath = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, entry.filePath);
+						//var openPath = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, entry.filePath);
+						var openPath = vscode.Uri.file(entry.rootPath + pathSeparator + entry.filePath);
 						vscode.workspace.openTextDocument(openPath).then(doc => 
 						{
 							vscode.window.showTextDocument(doc).then(editor => 
@@ -616,13 +625,15 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 			let index = 0;
 			for (const result of searchResults.Entries) {
 				for (const entry of (result as DirectoryEntry).Entries) {
-					this.pathToViewData[result.Name + pathSeparator + entry.Name] = index;
+					let absoluteFilePath = result.Name + pathSeparator + entry.Name;
+					this.pathToViewData[absoluteFilePath] = index;
 
 					if(entry.Data) // code search
 					{
 						for (const position of (entry.Data! as FilePositionsData).Positions) {
 							this.viewData.push({
 								filePath: entry.Name,
+								rootPath: result.Name,
 								lineNumber: 0,
 								columnNumber: 0,
 								matchLength: position.Length,
@@ -636,6 +647,7 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 					{
 						this.viewData.push({
 							filePath: entry.Name,
+							rootPath: result.Name,
 							lineNumber: 0,
 							columnNumber: 0,
 							matchLength: 0,
@@ -658,6 +670,12 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 			const idx = this.pathToViewData[extracts.FileName];
 			
 			this._view.webview.postMessage({ type: 'updateResultInfo', index: idx, extracts: extracts.FileExtracts });
+		}
+	}
+
+	public setStatusLabel(label : string) {
+		if (this._view) {
+			this._view.webview.postMessage({ type: 'setStatusLabel', label: label });
 		}
 	}
 
@@ -743,6 +761,9 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 					<div class="results-grid">
 					</div>
 				</div>
+
+				<span class="status-label">
+				</span>
 
 				<script id="mainmodule" data-mediaroot="${mediaRootUri}" type="module" src="${scriptUri}"></script>
 			</body>
