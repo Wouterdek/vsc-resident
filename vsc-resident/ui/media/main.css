@@ -99,7 +99,7 @@ body {
 .results-box {
 	flex-grow: 1;
 	min-height: 0;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .results-grid {
@@ -145,7 +145,7 @@ body {
 }
 
 .results-grid > .oddfile > * {
-	background-color: var(--vscode-sideBar-background);
+	background-color: var(--vscode-tab-activeBackground);
 }
 
 .results-grid > .oddfile:hover > * {
@@ -154,10 +154,14 @@ body {
 }
 
 .results-grid > .evenfile > * {
-	background-color: var(--vscode-panel-background);
+	background-color: var(--vscode-tab-inactiveBackground);
 }
 
 .results-grid > .evenfile:hover > * {
 	background-color: var(--vscode-list-hoverBackground);
 	color: var(--vscode-list-hoverForeground);
+}
+
+.status-label {
+	user-select: none;
 }
