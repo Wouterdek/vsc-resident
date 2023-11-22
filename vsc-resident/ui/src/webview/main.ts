@@ -233,7 +233,7 @@ provideVSCodeDesignSystem().register(allComponents);
             query: state.query,
         });
 
-        vscode.setState(state);
+        vscode.setState(getState());
     }
 
     class ResultsEntry

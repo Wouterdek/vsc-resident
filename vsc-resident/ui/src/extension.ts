@@ -1,8 +1,6 @@
 /*
 TODO:
 	shortcut to open and focus searchfield
-	does go to result also work when using remote?
-	fix incorrect code highlight theme on start
 	collapse/hide file?
 	highlight match in result, pause and refresh index buttons, virtualize results list, multiple search result windows
 	auto-reactivate on workspace pluginhost crash, general robustness/error-handling, better build process,
@@ -402,6 +400,7 @@ class Plugin
 
 		if(!await searchEngine.activate())
 		{
+			this.view.setStatusLabel("⚠️ Failed to start search server");
 			return false;
 		}
 	
@@ -440,7 +439,14 @@ class Plugin
 		searchEngine.onSearchCodeResponse = (requestId, msg) => {
 			if(requestId < lastSearchRequestId) { return; }
 	
-			this.view.setStatusLabel(`${msg.HitCount} hits (${msg.SearchedFileCount} searched files, ${msg.TotalFileCount} total)`);
+			if(msg.TotalFileCount === 0)
+			{
+				this.view.setStatusLabel("⚠️ Empty fileset, ensure vs-chromium-project.txt is set up correctly for your workspace.");
+			}
+			else
+			{
+				this.view.setStatusLabel(`${msg.HitCount} hits (${msg.SearchedFileCount} searched files, ${msg.TotalFileCount} total)`);
+			}
 			this.view.setResults(msg.SearchResults);
 
 			let maxSnippetLength:number = getConfig().get("maxSnippetLength")!;
