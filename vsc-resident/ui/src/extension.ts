@@ -1,5 +1,6 @@
 /*
 TODO:
+	shortcut to open and focus searchfield
 	does go to result also work when using remote?
 	fix incorrect code highlight theme on start
 	collapse/hide file?
@@ -548,11 +549,20 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 					{
 						let entry : ViewData = data.entry;
 
-						var pos = new vscode.Position(entry.lineNumber, entry.columnNumber);
-						var posEnd = new vscode.Position(entry.lineNumber, entry.columnNumber + entry.matchLength /*todo: multiline*/ );
-						//var openPath = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, entry.filePath);
-						var openPath = vscode.Uri.file(entry.rootPath + pathSeparator + entry.filePath);
-						vscode.workspace.openTextDocument(openPath).then(doc => 
+						let pos = new vscode.Position(entry.lineNumber, entry.columnNumber);
+						let posEnd = new vscode.Position(entry.lineNumber, entry.columnNumber + entry.matchLength /*todo: multiline*/ );
+						let rootPath = vscode.Uri.file(entry.rootPath);
+
+						let filePath = vscode.Uri.file(entry.rootPath + pathSeparator + entry.filePath);
+						// The above doesn't work if the folder is remote. Try to find the workspace and reconstruct the URI
+						for (const workspaceFolder of vscode.workspace.workspaceFolders) {
+							if(workspaceFolder.uri.path == rootPath.path)
+							{
+								filePath = vscode.Uri.joinPath(workspaceFolder.uri, entry.filePath);
+								break;
+							}
+						}
+						vscode.workspace.openTextDocument(filePath).then(doc => 
 						{
 							vscode.window.showTextDocument(doc).then(editor => 
 							{
