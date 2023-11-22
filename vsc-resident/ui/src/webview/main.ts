@@ -116,6 +116,7 @@ provideVSCodeDesignSystem().register(allComponents);
     {
         return {
             isSettingsExpanded: true,
+            themeIsDark: false,
             searchBoxHistory: [],
             filePathsBoxHistory: [],
             query: {
@@ -125,7 +126,9 @@ provideVSCodeDesignSystem().register(allComponents);
                 wholeWord: false,
                 regex: false,
                 symlink: false
-            }
+            },
+            results: [],
+            status: ""
         };
     }
 

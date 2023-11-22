@@ -601,12 +601,9 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 			}
 		}));
 
-		this._view?.webview.postMessage({ type: 'themeChanged', isDark: vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark });
 		this.context.subscriptions.push(vscode.window.onDidChangeActiveColorTheme(e => {
 			this._view?.webview.postMessage({ type: 'themeChanged', isDark: e.kind === vscode.ColorThemeKind.Dark });
 		}));
-
-		this._view?.webview.postMessage({ type: 'applyState' });
 	}
 
 	private updateConfig()
@@ -621,6 +618,9 @@ class SearchViewProvider implements vscode.WebviewViewProvider {
 			}
 		};
 		this._view?.webview.postMessage({ type: 'configChanged', config: configObj });
+
+		this._view?.webview.postMessage({ type: 'themeChanged', isDark: vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark });
+		
 	}
 
 	private viewData : ViewData[] = [];
